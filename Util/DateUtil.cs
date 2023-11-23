@@ -12,7 +12,7 @@ namespace wa77cher.Util
         {
             long unixTime = ((DateTimeOffset)source).ToUnixTimeSeconds();
 
-            var result = string.Join(" ", format.Split().ToList().ConvertAll(mode => $"<t:{unixTime}:{mode}>"));
+            var result = string.Join(" ", format.ToList().ConvertAll(mode => $"<t:{unixTime}:{mode}>"));
             return result;
         }
     }
