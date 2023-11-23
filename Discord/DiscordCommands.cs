@@ -19,7 +19,7 @@ namespace wa77cher.Discord
 
         [Command("list")]
         [Description("List recorded data")]
-        [RequireRoles(RoleCheckMode.SpecifiedOnly, 893786618446643200)]
+        [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
         public async Task List(CommandContext context, string source = "steam")
         {
             if(source != "steam" && source != "discord")
@@ -52,7 +52,7 @@ namespace wa77cher.Discord
 
         [Command("clear")]
         [Description("Clear recorded data")]
-        [RequireRoles(RoleCheckMode.SpecifiedOnly, 893786618446643200)]
+        [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
         public async Task Clear(CommandContext context, string source = "steam")
         {
             if (source != "steam" && source != "discord")
