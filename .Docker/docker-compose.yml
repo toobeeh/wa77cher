@@ -2,7 +2,7 @@
 
 services:
   palantir:
-    container_name: palantir
+    container_name: wa77cher
     image: "ghcr.io/toobeeh/wa77cher/wa77cher:latest"
     environment:
       - DC_BOT_TOKEN=token
