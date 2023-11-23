@@ -7,7 +7,7 @@ on:
 
 env:
   IMAGE_NAME: wa77cher
-  DOCKERFILE_PATH: ./.docker/Dockerfile
+  DOCKERFILE_PATH: ./.Docker/Dockerfile
 
 jobs:
   build-and-publish:
