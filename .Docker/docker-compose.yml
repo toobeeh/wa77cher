@@ -1,0 +1,8 @@
+﻿version: "3.0"
+
+services:
+  palantir:
+    container_name: palantir
+    image: "ghcr.io/toobeeh/wa77cher/wa77cher:latest"
+    environment:
+      - DC_BOT_TOKEN=token
