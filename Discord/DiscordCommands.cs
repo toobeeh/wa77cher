@@ -20,7 +20,7 @@ namespace wa77cher.Discord
         [Command("list")]
         [Description("List recorded data")]
         [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
-        public async Task List(CommandContext context, string source = "steam")
+        public async Task List(CommandContext context, [Description("The statistic to view: either 'steam' (default) or 'discord'.")] string source = "steam")
         {
             if(source != "steam" && source != "discord")
             {
@@ -49,11 +49,10 @@ namespace wa77cher.Discord
             await context.RespondAsync(response);
         }
 
-
         [Command("clear")]
         [Description("Clear recorded data")]
         [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
-        public async Task Clear(CommandContext context, string source = "steam")
+        public async Task Clear(CommandContext context, [Description("The statistic to clear: either 'steam' (default) or 'discord'.")] string source = "steam")
         {
             if (source != "steam" && source != "discord")
             {
@@ -82,6 +81,29 @@ namespace wa77cher.Discord
 
             message.ClearComponents();
             await response.ModifyAsync(message);
+        }
+
+        [Command("steamhrs")]
+        [Description("View spent hours of a user's steam profile")]
+        [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
+        public async Task SteamHrs(CommandContext context, [Description("The steam user id of the user to fetch")] string username)
+        {
+            double? hours = null;
+            try
+            {
+                var scraper = new SteamHoursScraper();
+                hours = await scraper.ScrapeProfile(username);
+            }
+            catch { }
+
+            if(hours is null)
+            {
+                await context.RespondAsync("Something went wrong. Maybe this user doesn't exist.");
+            }
+            else
+            {
+                await context.RespondAsync($"User {username} has spent {hours} in the last two weeks playing steam games.");
+            }
         }
     }
 }
