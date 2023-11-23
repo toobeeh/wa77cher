@@ -21,8 +21,8 @@ namespace wa77cher.Discord
                 var after = args.PresenceAfter.Activity;
 
                 // filter out non-games
-                if (before.ActivityType != DSharpPlus.Entities.ActivityType.Playing) before = null;
-                if (after.ActivityType != DSharpPlus.Entities.ActivityType.Playing) after = null;
+                if (before is not null && before.ActivityType != DSharpPlus.Entities.ActivityType.Playing) before = null;
+                if (after is not null && after.ActivityType != DSharpPlus.Entities.ActivityType.Playing) after = null;
 
                 // if activity ended
                 if (before is null && after is not null)
