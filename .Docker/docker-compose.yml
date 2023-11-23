@@ -6,3 +6,8 @@ services:
     image: "ghcr.io/toobeeh/wa77cher/wa77cher:latest"
     environment:
       - DC_BOT_TOKEN=token
+    volumes:
+    - data:/App/data/app.db
+
+volumes:
+  data:

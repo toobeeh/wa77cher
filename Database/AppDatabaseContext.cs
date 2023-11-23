@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +11,11 @@ namespace wa77cher.Database
 {
     internal class AppDatabaseContext : DbContext
     {
+        private static readonly string PATH = "./data";
+        private string DbPath { get { return Path.Combine(PATH, "app.db"); } }
         public static void EnsureDatabaseExists()
         {
+            Directory.CreateDirectory(PATH);
             var ctx = new AppDatabaseContext();
             ctx.Database.EnsureCreated();
             ctx.Dispose();
@@ -23,7 +27,7 @@ namespace wa77cher.Database
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             // Use SQLite as the database provider
-            optionsBuilder.UseSqlite("Data Source=app.db");
+            optionsBuilder.UseSqlite($"Data Source={DbPath}");
         }
     }
 }
