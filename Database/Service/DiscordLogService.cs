@@ -18,7 +18,7 @@ namespace wa77cher.Database.Service
             var response = string.Join("\n", database.DiscordLog
                    .ToList()
                    .ConvertAll(item =>
-                   $"`{item.EventType}` >> `{item.ActivityName}` {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "dt")}`"));
+                   $"`{item.EventType}` >> `{item.ActivityName}` {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "dt")}"));
             if (response.Length == 0) response = "No records found.";
             return response;
         }
