@@ -19,6 +19,7 @@ namespace wa77cher.Quartz
                 .UsingJobData("userId", userId));
 
             configurator.AddTrigger(trigger => trigger
+                .ForJob(jobId)
                 .StartNow()
                 .WithDailyTimeIntervalSchedule(x => x
                 .OnEveryDay()
