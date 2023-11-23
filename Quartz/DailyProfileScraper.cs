@@ -3,48 +3,52 @@ using Quartz.Impl;
 using wa77cher.Database;
 using wa77cher.Scraper;
 using wa77cher.Database.Model;
+using wa77cher.Database.Service;
+using Microsoft.Extensions.Logging;
 
 namespace wa77cher.Quartz
 {
     internal static class DailyProfileScraper
     {
-        public static async Task Schedule(string userId)
+        public static void Configure(IServiceCollectionQuartzConfigurator configurator, string userId)
         {
-            ISchedulerFactory schedFact = new StdSchedulerFactory();
-            IScheduler scheduler = await schedFact.GetScheduler();
+            var jobId = new JobKey($"Daily profile scraper {userId}");
 
-            var job = JobBuilder.Create<DailyProfileScraperJob>()
-                .WithIdentity($"Daily profile scraper {userId}")
-                .UsingJobData("userId", userId)
-                .Build();
+            configurator.AddJob<DailyProfileScraperJob>(job => job
+                .WithIdentity(jobId)
+                .UsingJobData("userId", userId));
 
-            var trigger = TriggerBuilder.Create()
+            configurator.AddTrigger(trigger => trigger
                 .StartNow()
                 .WithDailyTimeIntervalSchedule(x => x
                 .OnEveryDay()
-                .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(23, 59)))
-                .Build();
+                .StartingDailyAt(TimeOfDay.HourAndMinuteOfDay(23, 59))));
 
-            await scheduler.ScheduleJob(job, trigger);
-            await scheduler.Start();
+            return;
         }
     }
 
     class DailyProfileScraperJob : IJob
     {
+        private readonly SteamTimesService steamTimesService;
+        private readonly ILogger<DailyProfileScraperJob> logger;
+        public DailyProfileScraperJob(SteamTimesService service, ILogger<DailyProfileScraperJob> logger) 
+        { 
+            steamTimesService = service; 
+            this.logger = logger; 
+        }
+
         public async Task Execute(IJobExecutionContext context)
         {
             var userId = context.JobDetail.JobDataMap.GetString("userId");
-            if(userId is null) throw new ArgumentNullException("userId");
+            if(userId is null) throw new Exception("userId was null");
 
             var scraper = new SteamHoursScraper();
             var hours = await scraper.ScrapeProfile(userId);
 
-            var entity = new SteamWeeklyTimeSpent() { TimeSpent = hours ?? 0 };
-            var ctx = new AppDatabaseContext();
-            ctx.SteamTimes.Add(entity);
-            await ctx.SaveChangesAsync();
-            await ctx.DisposeAsync();
+            await steamTimesService.LogTimeSpent(hours);
+
+            logger.LogInformation("Scraped steam hours for " + userId);
         }
     }
 }

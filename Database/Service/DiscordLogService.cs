@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using wa77cher.Database.Model;
 
 namespace wa77cher.Database.Service
 {
@@ -25,6 +26,12 @@ namespace wa77cher.Database.Service
         {
             database.DiscordLog.RemoveRange(database.DiscordLog);
             database.SaveChanges();
+        }
+
+        public async Task LogPresencEvents(List<DiscordPresenceEvent> events)
+        {
+            database.DiscordLog.AddRange(events);
+            await database.SaveChangesAsync();
         }
     }
 }

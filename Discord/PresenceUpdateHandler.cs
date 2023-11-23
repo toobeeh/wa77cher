@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.EventArgs;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using wa77cher.Database;
 using wa77cher.Database.Model;
+using wa77cher.Database.Service;
+using wa77cher.Quartz;
 
 namespace wa77cher.Discord
 {
-    internal static class PresenceUpdateHandler
+    internal class PresenceUpdateHandler
     {
-        public static async Task HandlePresenceUpdate(PresenceUpdateEventArgs args, ulong userIdFilter)
+        private readonly DiscordLogService service;
+        private readonly ILogger<DailyProfileScraperJob> logger;
+        public PresenceUpdateHandler(DiscordLogService service, ILogger<DailyProfileScraperJob> logger) { this.service = service; this.logger = logger; }
+
+        public async Task HandlePresenceUpdate(PresenceUpdateEventArgs args, ulong userIdFilter)
         {
             if(args.User.Id == userIdFilter)
             {
@@ -58,10 +65,9 @@ namespace wa77cher.Discord
                     });
                 }
 
-                var db = new AppDatabaseContext();
-                db.DiscordLog.AddRange(events);
-                await db.SaveChangesAsync();
-                await db.DisposeAsync();
+                await service.LogPresencEvents(events);
+
+                logger.LogInformation("Processed presence events for " + userIdFilter);
             }
         }
     }

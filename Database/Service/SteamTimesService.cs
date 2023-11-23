@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using wa77cher.Database.Model;
 
 namespace wa77cher.Database.Service
 {
@@ -25,6 +21,13 @@ namespace wa77cher.Database.Service
         {
             database.SteamTimes.RemoveRange(database.SteamTimes);
             database.SaveChanges();
+        }
+
+        public async Task LogTimeSpent(double? hours)
+        {
+            var entity = new SteamWeeklyTimeSpent() { TimeSpent = hours ?? 0 };
+            database.SteamTimes.Add(entity);
+            await database.SaveChangesAsync();
         }
     }
 }

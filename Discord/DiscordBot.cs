@@ -12,7 +12,7 @@ namespace wa77cher.Discord
     {
         private DiscordClient Client;
 
-        public DiscordBot(string token)
+        public DiscordBot(string token, ServiceProvider serviceProvider)
         {
             Client = new DiscordClient(new DiscordConfiguration
             {
@@ -21,17 +21,11 @@ namespace wa77cher.Discord
                 Intents = DiscordIntents.All
             });
 
-            var services = new ServiceCollection()
-                .AddDbContext<AppDatabaseContext>()
-                .AddSingleton<DiscordLogService>()
-                .AddSingleton<SteamTimesService>()
-                .BuildServiceProvider();
-
             var commands = Client.UseCommandsNext(new CommandsNextConfiguration
             {
                 StringPrefixes = new string[] { "bw" },
                 CaseSensitive = false,
-                Services = services
+                Services = serviceProvider
             });
             commands.RegisterCommands<DiscordCommands>();
 
