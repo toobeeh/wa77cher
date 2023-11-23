@@ -86,13 +86,15 @@ namespace wa77cher.Discord
         [Command("steamhrs")]
         [Description("View spent hours of a user's steam profile")]
         [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
-        public async Task SteamHrs(CommandContext context, [Description("The steam user id of the user to fetch")] string username)
+        public async Task SteamHrs(CommandContext context, [Description("The steam user id of the user to fetch (default: 'berwir77')")] string username = "berwir77")
         {
             double? hours = null;
+            double? bwHours = null;
             try
             {
                 var scraper = new SteamHoursScraper();
                 hours = await scraper.ScrapeProfile(username);
+                if(username != "berwir77") bwHours = await scraper.ScrapeProfile("berwir77");
             }
             catch { }
 
@@ -100,9 +102,13 @@ namespace wa77cher.Discord
             {
                 await context.RespondAsync("Something went wrong. Maybe this user doesn't exist.");
             }
-            else
+            else if(hours is not null && bwHours is null)
             {
                 await context.RespondAsync($"User {username} has spent {hours} in the last two weeks playing steam games.");
+            }
+            else if(hours is not null && bwHours is not null)
+            {
+                await context.RespondAsync($"User {username} has spent {hours} in the last two weeks playing steam games.\nThat's {Math.Abs((double)bwHours-(double)hours)}h {(bwHours > hours ? "less" : "more")} than berwir77!");
             }
         }
     }
