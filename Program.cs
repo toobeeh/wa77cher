@@ -29,7 +29,7 @@ namespace wa77cher
 
             // add listener for discord user presence updates
             var presenceHandler = serviceProvider.GetRequiredService<PresenceUpdateHandler>();
-            bot.AddPresenceUpdatedHandler(args => presenceHandler.HandlePresenceUpdate(args, 334048043638849536));
+            bot.AddPresenceUpdatedHandler(args => presenceHandler.HandlePresenceUpdate(args, 260826282462412801));
 
             // start scheduled jobs via DI
             var schedulerFactory = serviceProvider.GetRequiredService<ISchedulerFactory>();
