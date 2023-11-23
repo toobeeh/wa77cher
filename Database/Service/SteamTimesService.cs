@@ -1,4 +1,5 @@
 ﻿using wa77cher.Database.Model;
+using wa77cher.Util;
 
 namespace wa77cher.Database.Service
 {
@@ -12,7 +13,7 @@ namespace wa77cher.Database.Service
             var response = string.Join("\n", database.SteamTimes
                     .ToList()
                     .ConvertAll(item =>
-                    $"`{item.TimeSpent}h` - `{item.Timestamp.ToShortDateString()}  {item.Timestamp.ToShortTimeString()}`"));
+                    $"`{item.TimeSpent}h` - {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "dt")}"));
             if (response.Length == 0) response = "No records found.";
             return response;
         }

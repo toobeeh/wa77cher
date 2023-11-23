@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using wa77cher.Database.Model;
+using wa77cher.Util;
 
 namespace wa77cher.Database.Service
 {
@@ -17,7 +18,7 @@ namespace wa77cher.Database.Service
             var response = string.Join("\n", database.DiscordLog
                    .ToList()
                    .ConvertAll(item =>
-                   $"`{item.EventType}` >> `{item.ActivityName}` `{item.Timestamp.ToShortDateString()}  {item.Timestamp.ToShortTimeString()}`"));
+                   $"`{item.EventType}` >> `{item.ActivityName}` {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "dt")}`"));
             if (response.Length == 0) response = "No records found.";
             return response;
         }
