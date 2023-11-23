@@ -9,43 +9,26 @@ using System.Text;
 using System.Threading.Tasks;
 using wa77cher.Database;
 using wa77cher.Database.Model;
+using wa77cher.Database.Service;
 using wa77cher.Scraper;
 
 namespace wa77cher.Discord
 {
     internal class DiscordCommands : BaseCommandModule
     {
-        public AppDatabaseContext Database { private get; set; }
+        private readonly SteamTimesService steamService;
+        private readonly DiscordLogService logService;
+        public DiscordCommands(SteamTimesService ss, DiscordLogService ls) { steamService = ss; logService = ls; }
 
         [Command("list")]
         [Description("List recorded data")]
         [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
         public async Task List(CommandContext context, [Description("The statistic to view: either 'steam' (default) or 'discord'.")] string source = "steam")
         {
-            if(source != "steam" && source != "discord")
-            {
-                await context.RespondAsync("Invalid source " + source);
-                return;
-            }
+            var response = "Invalid source " + source;
+            if (source == "steam") response = steamService.GetSteamTimeList();
+            else if(source == "discord")  response = logService.GetDiscordLogList();
 
-            var response = "";
-
-            if (source == "steam")
-            {
-                response = String.Join("\n", Database.SteamTimes
-                    .ToList()
-                    .ConvertAll(item =>
-                    $"`{item.TimeSpent}h` - `{item.Timestamp.ToShortDateString()}  {item.Timestamp.ToShortTimeString()}`"));
-            }
-            else if(source == "discord")
-            {
-                response = String.Join("\n", Database.DiscordLog
-                   .ToList()
-                   .ConvertAll(item =>
-                   $"`{item.EventType}` >> `{item.ActivityName}` `{item.Timestamp.ToShortDateString()}  {item.Timestamp.ToShortTimeString()}`"));
-            }
-
-            if (response.Length == 0) response = "No records found.";
             await context.RespondAsync(response);
         }
 
@@ -70,10 +53,9 @@ namespace wa77cher.Discord
             var interaction = await response.WaitForButtonAsync(context.User, TimeSpan.FromMinutes(1));
             if (!interaction.TimedOut)
             {
-                if(source == "steam") Database.SteamTimes.RemoveRange(Database.SteamTimes);
-                else if (source == "discord") Database.DiscordLog.RemoveRange(Database.DiscordLog);
+                if (source == "steam") steamService.ClearSteamTimes();
+                else if (source == "discord") logService.ClearDiscordLog();
 
-                Database.SaveChanges();
                 await interaction.Result.Interaction.CreateResponseAsync(
                    DSharpPlus.InteractionResponseType.ChannelMessageWithSource,
                    new DiscordInteractionResponseBuilder().WithContent("Cleared records."));
@@ -104,11 +86,11 @@ namespace wa77cher.Discord
             }
             else if(hours is not null && bwHours is null)
             {
-                await context.RespondAsync($"User {username} has spent {hours} in the last two weeks playing steam games.");
+                await context.RespondAsync($"User {username} has spent {hours}h in the last two weeks playing steam games.");
             }
             else if(hours is not null && bwHours is not null)
             {
-                await context.RespondAsync($"User {username} has spent {hours} in the last two weeks playing steam games.\nThat's {Math.Abs((double)bwHours-(double)hours)}h {(bwHours > hours ? "less" : "more")} than berwir77!");
+                await context.RespondAsync($"User {username} has spent {hours}h in the last two weeks playing steam games.\nThat's {Math.Abs((double)bwHours-(double)hours)}h {(bwHours > hours ? "less" : "more")} than berwir77!");
             }
         }
     }

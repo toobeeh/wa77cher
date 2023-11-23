@@ -4,6 +4,7 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Interactivity.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using wa77cher.Database;
+using wa77cher.Database.Service;
 
 namespace wa77cher.Discord
 {
@@ -22,6 +23,8 @@ namespace wa77cher.Discord
 
             var services = new ServiceCollection()
                 .AddDbContext<AppDatabaseContext>()
+                .AddSingleton<DiscordLogService>()
+                .AddSingleton<SteamTimesService>()
                 .BuildServiceProvider();
 
             var commands = Client.UseCommandsNext(new CommandsNextConfiguration
