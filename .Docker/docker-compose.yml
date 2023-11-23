@@ -7,7 +7,7 @@ services:
     environment:
       - DC_BOT_TOKEN=token
     volumes:
-    - data:/App/data/app.db
+    - data:/App/data/
 
 volumes:
   data:
