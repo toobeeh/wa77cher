@@ -31,7 +31,23 @@ namespace wa77cher.Discord
             if (source == "steam") response = steamService.GetSteamTimeList();
             else if(source == "discord")  response = logService.GetDiscordLogList();
 
-            var pages = context.Client.GetInteractivity().GeneratePagesInContent(response, DSharpPlus.Interactivity.Enums.SplitType.Line);
+            var pages = new List<Page>();
+
+            var lines = response.Split("\n").Reverse();
+            foreach (var line in lines)
+            {
+                if(pages.Count == 0 || pages.Last().Content.Length + line.Length > 2000)
+                {
+                    var page = new Page();
+                    page.Content = line;
+                    pages.Add(page);
+                }
+                else
+                {
+                    pages.Last().Content = line + "\n" + pages.Last().Content;
+                }
+            }
+
             await context.Client.GetInteractivity().SendPaginatedMessageAsync(context.Channel, context.User, pages);
         }
 
@@ -45,9 +61,10 @@ namespace wa77cher.Discord
             {
                 var summary = days[key];
                 var page = new Page();
-                page.Content = $"## {DateUtil.DateTimeToDiscordTimestamp(key, "D")}\n {summary}";
+                page.Content = $"## {DateUtil.DateTimeToDiscordTimestamp(key, "D")}\n{summary}\n_ _";
                 return page;
             });
+            pages.Reverse();
 
             await context.Client.GetInteractivity().SendPaginatedMessageAsync(context.Channel, context.User, pages);
         }

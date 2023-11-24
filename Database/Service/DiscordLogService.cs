@@ -47,7 +47,8 @@ namespace wa77cher.Database.Service
                     {
                         if(next is not null && next.EventType == PresenceEventType.End && next.ActivityName == evt.ActivityName)
                         {
-                            var duration = next.Timestamp.Subtract(evt.Timestamp).ToString(@"hh\:mm"); ;
+                            var span = next.Timestamp.Subtract(evt.Timestamp);
+                            var duration = $"{(int)span.TotalHours}h {(int)span.TotalMinutes % 60}m";
                             dayList += $"Played {evt.ActivityName} for {duration} {DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")}\n";
                             i++;
                         }
