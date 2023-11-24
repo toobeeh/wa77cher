@@ -1,6 +1,7 @@
 ﻿using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using wa77cher.Database;
 using wa77cher.Database.Model;
 using wa77cher.Database.Service;
 using wa77cher.Scraper;
+using wa77cher.Util;
 
 namespace wa77cher.Discord
 {
@@ -29,7 +31,25 @@ namespace wa77cher.Discord
             if (source == "steam") response = steamService.GetSteamTimeList();
             else if(source == "discord")  response = logService.GetDiscordLogList();
 
-            await context.RespondAsync(response);
+            var pages = context.Client.GetInteractivity().GeneratePagesInContent(response, DSharpPlus.Interactivity.Enums.SplitType.Line);
+            await context.Client.GetInteractivity().SendPaginatedMessageAsync(context.Channel, context.User, pages);
+        }
+
+        [Command("timeline")]
+        [Description("View a daily timeline of discord events")]
+        [RequireRoles(RoleCheckMode.MatchIds, 893786618446643200)]
+        public async Task Timeline(CommandContext context)
+        {
+            var days = logService.GetDiscordDailySummaries();
+            var pages = days.Keys.ToList().ConvertAll(key =>
+            {
+                var summary = days[key];
+                var page = new Page();
+                page.Content = $"## {DateUtil.DateTimeToDiscordTimestamp(key, "D")}\n {summary}";
+                return page;
+            });
+
+            await context.Client.GetInteractivity().SendPaginatedMessageAsync(context.Channel, context.User, pages);
         }
 
         [Command("clear")]
