@@ -44,7 +44,7 @@ namespace wa77cher.Discord
                 }
                 else
                 {
-                    pages.Last().Content = line + "\n" + pages.Last().Content;
+                    pages.Last().Content += "\n" + line;
                 }
             }
 
@@ -61,7 +61,7 @@ namespace wa77cher.Discord
             {
                 var summary = days[key];
                 var page = new Page();
-                page.Content = $"## {DateUtil.DateTimeToDiscordTimestamp(key, "D")}\n{summary}\n_ _";
+                page.Content = $"## {DateUtil.DateTimeToDiscordTimestamp(key, "D")}\n{summary}\n";
                 return page;
             });
             pages.Reverse();
