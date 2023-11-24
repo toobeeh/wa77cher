@@ -13,7 +13,7 @@ namespace wa77cher.Database.Service
             var response = string.Join("\n", database.SteamTimes
                     .ToList()
                     .ConvertAll(item =>
-                    $"`{item.TimeSpent}h` - {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "dt")}"));
+                    $"`{item.TimeSpent}h` - {DateUtil.DateTimeToDiscordTimestamp(item.Timestamp, "D")}"));
             if (response.Length == 0) response = "No records found.";
             return response;
         }
