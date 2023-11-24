@@ -49,7 +49,7 @@ namespace wa77cher.Database.Service
                         {
                             var span = next.Timestamp.Subtract(evt.Timestamp);
                             var duration = $"{(int)span.TotalHours}h {(int)span.TotalMinutes % 60}m";
-                            dayList += $"Played {evt.ActivityName} for {duration} {DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")}\n";
+                            dayList += $"{DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")} Played {evt.ActivityName} for {duration}\n";
                             i++;
                         }
                         else if(evt.EventType == PresenceEventType.Start)
