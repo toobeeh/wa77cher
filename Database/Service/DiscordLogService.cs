@@ -54,11 +54,11 @@ namespace wa77cher.Database.Service
                         }
                         else if(evt.EventType == PresenceEventType.Start)
                         {
-                           dayList += $"Started playing {evt.ActivityName} {DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")}\n";
+                           dayList += $"{DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")} Started playing {evt.ActivityName}\n";
                         }
                         else if (evt.EventType == PresenceEventType.End)
                         {
-                            dayList += $"Quit {evt.ActivityName} {DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")}\n";
+                            dayList += $"{DateUtil.DateTimeToDiscordTimestamp(evt.Timestamp, "t")} Quit {evt.ActivityName}\n";
                         }
                     }
                 }
