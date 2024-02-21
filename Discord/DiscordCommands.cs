@@ -36,7 +36,7 @@ namespace wa77cher.Discord
             var lines = response.Split("\n").Reverse();
             foreach (var line in lines)
             {
-                if(pages.Count == 0 || pages.Last().Content.Length + line.Length > 2000)
+                if(pages.Count == 0 || pages.Last().Content.Length + line.Length > 1500)
                 {
                     var page = new Page();
                     page.Content = line;

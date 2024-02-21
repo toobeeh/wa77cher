@@ -29,6 +29,11 @@ namespace wa77cher.Discord
                 Services = serviceProvider
             });
             commands.RegisterCommands<DiscordCommands>();
+            
+            commands.CommandErrored += async (s, e) =>
+            {
+                Console.WriteLine(e.Exception.ToString());
+            };
 
             Client.UseInteractivity();
         }
