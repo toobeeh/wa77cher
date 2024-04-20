@@ -41,7 +41,7 @@ namespace wa77cher.Scraper
 
         private double ExtractSteamWeeklyHours(HtmlDocument document)
         {
-            var element = document.DocumentNode.SelectSingleNode("//div[@class='recentgame_quicklinks recentgame_recentplaytime']//h2");
+            var element = document.DocumentNode.SelectSingleNode("//div[@class='recentgame_quicklinks recentgame_recentplaytime']//div");
             var hours = Convert.ToDouble(element?.InnerText.Trim().Split(" ")[0]);
             return hours;
         }
